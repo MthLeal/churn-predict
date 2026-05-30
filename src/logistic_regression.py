@@ -1,7 +1,7 @@
 import numpy as np
 
 class LogisticRegressionScratch():
-    def __init__(self, learning_rate=0.001, iterations=1000, _lambda=0):
+    def __init__(self, learning_rate=0.01, iterations=1000, _lambda=0):
         self.weights = None
         self.bias = None
         self.learning_rate = learning_rate
@@ -39,8 +39,8 @@ class LogisticRegressionScratch():
             dj_dw = (1/m) * (np.dot(X.T, (y_pred - y)) + ((self._lambda / m) * self.weights))
             dj_db = (1/m) * np.sum(y_pred - y)
 
-            self.weights -= self.weights - self.learning_rate * dj_dw
-            self.bias -= self.bias - self.learning_rate * dj_db
+            self.weights -=  self.learning_rate * dj_dw
+            self.bias -=  self.learning_rate * dj_db
     
 
     def predict_proba(self, X: np.ndarray) -> np.ndarray:
@@ -50,7 +50,32 @@ class LogisticRegressionScratch():
         return y_pred
 
     
-    def predict(self, X: np.ndarray) -> list[int]:
+    def predict(self, X: np.ndarray, threshold=0.5) -> list[int]:
         y_pred = self.predict_proba(X)
 
-        return [0 if i <= 0.5 else 1 for i in y_pred]
+        return [0 if i <= threshold else 1 for i in y_pred]
+    
+    def get_params(self) -> dict:
+        out_dict = dict(
+            weights = self.weights,
+            bias = self.bias,
+        )
+
+        return out_dict
+    
+
+    def set_params(self, w: np.ndarray, b: float):
+        if type(w) == np.ndarray:
+            self.weights = w
+        if type(b) == float:
+            self.bias = b
+
+
+    def score(self, X: np.ndarray, y: np.ndarray, threshold=0.5) -> float:
+
+        m = X.shape[0]
+        y_pred = self.predict(X, threshold)
+
+        accuracy = (1 / m) * np.sum([1 for i in range(m) if y[i] == y_pred[i]])
+
+        return accuracy
