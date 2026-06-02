@@ -4,6 +4,7 @@ class LogisticRegressionScratch():
     def __init__(self, learning_rate=0.01, iterations=1000, _lambda=0):
         self.weights = None
         self.bias = None
+        self.classes_ = np.array([0, 1])
         self.learning_rate = learning_rate
         self.iterations = iterations
         self._lambda = _lambda
@@ -30,6 +31,7 @@ class LogisticRegressionScratch():
         m, n = X.shape
         self.weights = np.zeros(n)
         self.bias = 0
+        self.classes_ = np.unique(y)
 
         for _ in range(self.iterations):
             z = np.dot(X, self.weights) + self.bias
